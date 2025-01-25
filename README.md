@@ -3,7 +3,7 @@
 
 This collection of innovative web projects showcases how AI tools like ChatGPT can assist in web development by offering guidance, solutions, and creative ideas.  
 
-👉 **Check out the live demo here:** [Web Development Using AI](https://krishmeghapara.github.io/Web-Dev_Using_AI/)  
+👉 **Check out the live demo here:** [Web Development Using AI](https://krishmeghapara.github.io/Web_Dev_Using_AI/)  
 
 ---
 
