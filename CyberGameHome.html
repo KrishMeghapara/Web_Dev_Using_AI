@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Play a fun and engaging Snake Game by Krish Meghapara with stunning animations!">
+  <meta name="author" content="Krish Meghapara">
+  <title>Neon Snake Game</title>
+  <style>
+    :root {
+      --neon-pink: #ff007f;
+      --neon-blue: #00f3ff;
+      --neon-purple: #9d00ff;
+      --neon-yellow: #ffd700;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(45deg, #1a1a1a, #000);
+      color: #fff;
+      text-align: center;
+      overflow: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .grid-lines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(255, 0, 127, 0.1) 20px),
+        repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(255, 0, 127, 0.1) 20px);
+      z-index: 0;
+      animation: gridMove 100s linear infinite;
+      will-change: background-position;
+    }
+
+    @keyframes gridMove {
+      from { background-position: 0 0; }
+      to { background-position: 0 1000px; }
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      margin: 0;
+      text-shadow: 0 0 15px var(--neon-pink);
+      letter-spacing: 4px;
+      padding: 1rem;
+      background: linear-gradient(45deg, rgba(255,0,127,0.1), rgba(0,201,255,0.1));
+      border: 2px solid var(--neon-blue);
+      border-radius: 10px;
+      animation: neonPulse 2s infinite alternate;
+      will-change: filter;
+    }
+
+    @keyframes neonPulse {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.2); }
+    }
+
+    p {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      margin: 2rem 0;
+      text-shadow: 0 0 10px var(--neon-pink);
+    }
+
+    #startButton {
+      display: inline-block;
+      padding: 1.2rem 2.5rem;
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
+      background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+      color: #fff;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 25px var(--neon-pink);
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+      margin-top: 2rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+    }
+
+    #startButton::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+    }
+
+    #startButton:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 40px var(--neon-blue);
+    }
+
+    #startButton:hover::before {
+      left: 100%;
+    }
+
+    #startButton:active {
+      transform: scale(0.95);
+    }
+
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--neon-blue);
+      border-radius: 50%;
+      animation: float 6s infinite linear;
+      opacity: 0.7;
+      will-change: transform;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0.5); }
+      100% { transform: translateY(-100vh) scale(1.5); }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-lines"></div>
+  <div class="content">
+    <header>
+      <h1>Cyber Snake Game</h1>
+      <p>by <strong>Krish Meghapara</strong></p>
+    </header>
+    <button id="startButton">Start Game</button>
+  </div>
+  <div class="particles" id="particles"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script>
+    // Enhanced Animation Controller
+    const initAnimations = () => {
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      
+      tl.from("h1", { 
+        duration: 1.5, 
+        y: -100, 
+        opacity: 0, 
+        ease: "elastic.out(1, 0.3)" 
+      })
+      .from("p", { 
+        duration: 1.2, 
+        y: 50, 
+        opacity: 0 
+      }, 0.4)
+      .to("#startButton", {
+        duration: 1,
+        scale: 1,
+        rotation: 0,
+        opacity: 1,
+        visibility: "visible",
+        y: 0,
+        ease: "back.out(1.7)",
+        onComplete: () => {
+          document.getElementById("startButton").style.pointerEvents = "auto";
+        }
+      }, 0.8);
+    };
+
+    // Optimized Game Transition
+    const startGame = () => {
+      if (window.isTransitioning) return;
+      window.isTransitioning = true;
+      
+      gsap.to("#startButton", {
+        duration: 0.6,
+        opacity: 0,
+        y: 50,
+        scale: 0.8,
+        ease: "power3.inOut",
+        onStart: () => {
+          document.getElementById("startButton").style.pointerEvents = "none";
+        },
+        onComplete: () => {
+          window.location.href = "Cybersnake.html";
+        }
+      });
+    };
+
+    // Dynamic Particle System
+    const createParticles = () => {
+      const container = document.getElementById("particles");
+      const particleCount = Math.floor(window.innerWidth * window.innerHeight / 15000);
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement("div");
+        particle.className = "particle";
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.animationDelay = `${Math.random() * 6}s`;
+        particle.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+        container.appendChild(particle);
+      }
+    };
+
+    // Event Handlers
+    const setupEventListeners = () => {
+      document.getElementById("startButton").addEventListener("click", startGame);
+      document.addEventListener("keydown", (e) => {
+        if (["Space", "Enter"].includes(e.code)) {
+          e.preventDefault();
+          startGame();
+        }
+      });
+      
+      let resizeTimeout;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          document.getElementById("particles").innerHTML = "";
+          createParticles();
+        }, 200);
+      });
+    };
+
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      initAnimations();
+      setupEventListeners();
+      gsap.delayedCall(0.5, createParticles);
+    });
+  </script>
+</body>
+</html>

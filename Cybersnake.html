@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Snake Game</title>
+  <style>
+    :root {
+      --cell-size: 20px;
+      --hue: 180;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #000;
+      font-family: 'Arial', sans-serif;
+      touch-action: none;
+    }
+
+    .container {
+      position: relative;
+      padding: 20px;
+      border: 2px solid #0ff;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    h1 {
+      color: #0ff;
+      text-align: center;
+      margin: 0 0 20px 0;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    .game-board {
+      width: 400px;
+      height: 400px;
+      position: relative;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid #0ff;
+    }
+
+    .snake-cell {
+      width: var(--cell-size);
+      height: var(--cell-size);
+      position: absolute;
+      background: hsl(var(--hue), 100%, 50%);
+      border-radius: 3px;
+      box-shadow: 0 0 10px hsl(var(--hue), 100%, 50%);
+    }
+
+    .food {
+      width: var(--cell-size);
+      height: var(--cell-size);
+      position: absolute;
+      background: #f0f;
+      border-radius: 50%;
+      box-shadow: 0 0 15px #f0f;
+      animation: pulse 1s infinite;
+    }
+
+    .score {
+      color: #fff;
+      text-align: center;
+      margin: 15px 0;
+      font-size: 1.2em;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      border: 2px solid #0ff;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+      max-width: 300px;
+    }
+
+    .modal-buttons {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .modal-button {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .restart-btn {
+      background: #0ff;
+      color: #000;
+    }
+
+    .reset-highscore-btn {
+      background: #f0f;
+      color: #000;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(0.9); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CYBER SNAKE</h1>
+    <div class="score">SCORE: <span id="score">0</span> | HIGH: <span id="highScore">0</span></div>
+    <div class="game-board" id="board"></div>
+    <div class="modal-buttons" style="margin-top: 20px;">
+      <button class="modal-button restart-btn" onclick="game.start()">Start Game</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="gameOverModal">
+    <div class="modal-content">
+      <h2>GAME OVER!</h2>
+      <p>Your Score: <span id="modalScore">0</span></p>
+      <div class="modal-buttons">
+        <button class="modal-button restart-btn" onclick="game.start()">Play Again</button>
+        <button class="modal-button reset-highscore-btn" onclick="game.resetHighScore()">Reset High Score</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class StableSnake {
+      constructor() {
+        this.boardSize = 20;
+        this.cellSize = 20;
+        this.snake = [];
+        this.direction = 'right';
+        this.nextDirection = 'right';
+        this.food = null;
+        this.score = 0;
+        this.highScore = localStorage.getItem('snakeHighScore') || 0;
+        this.gameLoop = null;
+        this.lastUpdate = 0;
+        this.updateInterval = 150;
+        this.hue = 180;
+        this.isGameActive = false;
+        this.init();
+      }
+
+      init() {
+        document.addEventListener('keydown', (e) => this.handleKey(e));
+        document.addEventListener('touchstart', (e) => this.handleTouchStart(e));
+        document.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+        document.getElementById('highScore').textContent = this.highScore;
+        this.renderBlank();
+      }
+
+      start() {
+        if (!this.isGameActive) {
+          this.isGameActive = true;
+          this.snake = [{x: 10, y: 10}];
+          this.direction = 'right';
+          this.nextDirection = 'right';
+          this.score = 0;
+          this.updateInterval = 150;
+          this.food = this.generateFood();
+          document.getElementById('gameOverModal').style.display = 'none';
+          this.gameLoop = requestAnimationFrame((ts) => this.update(ts));
+        }
+      }
+
+      renderBlank() {
+        const board = document.getElementById('board');
+        board.innerHTML = '<div style="color: #0ff; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">Click Start to Play!</div>';
+      }
+
+      handleKey(e) {
+        if (!this.isGameActive) return;
+        
+        const directions = {
+          'ArrowUp': 'up', 
+          'ArrowDown': 'down',
+          'ArrowLeft': 'left', 
+          'ArrowRight': 'right'
+        };
+        if (directions[e.key]) {
+          const newDir = directions[e.key];
+          if (this.isValidDirection(newDir)) {
+            this.nextDirection = newDir;
+          }
+        }
+      }
+
+      handleTouchStart(e) {
+        if (!this.isGameActive) return;
+        this.touchStart = {
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY
+        };
+      }
+
+      handleTouchEnd(e) {
+        if (!this.isGameActive) return;
+        
+        const deltaX = e.changedTouches[0].clientX - this.touchStart.x;
+        const deltaY = e.changedTouches[0].clientY - this.touchStart.y;
+        const absX = Math.abs(deltaX), absY = Math.abs(deltaY);
+        
+        let newDir = '';
+        if (absX > absY) {
+          newDir = deltaX > 0 ? 'right' : 'left';
+        } else {
+          newDir = deltaY > 0 ? 'down' : 'up';
+        }
+        
+        if (this.isValidDirection(newDir)) {
+          this.nextDirection = newDir;
+        }
+      }
+
+      isValidDirection(newDir) {
+        const opposite = {
+          up: 'down',
+          down: 'up',
+          left: 'right',
+          right: 'left'
+        };
+        return newDir !== opposite[this.direction];
+      }
+
+      update(timestamp) {
+        if (!this.isGameActive) return;
+        
+        if (timestamp - this.lastUpdate > this.updateInterval) {
+          this.lastUpdate = timestamp;
+          this.direction = this.nextDirection;
+          const head = {...this.snake[0]};
+          
+          switch(this.direction) {
+            case 'up': head.y--; break;
+            case 'down': head.y++; break;
+            case 'left': head.x--; break;
+            case 'right': head.x++; break;
+          }
+
+          if (this.checkCollision(head)) {
+            this.gameOver();
+            return;
+          }
+
+          this.snake.unshift(head);
+          
+          if (head.x === this.food.x && head.y === this.food.y) {
+            this.score++;
+            this.updateInterval = Math.max(50, this.updateInterval - 2);
+            if (this.score > this.highScore) {
+              this.highScore = this.score;
+              localStorage.setItem('snakeHighScore', this.highScore);
+            }
+            this.food = this.generateFood();
+          } else {
+            this.snake.pop();
+          }
+
+          this.hue = (this.hue + 1) % 360;
+          this.render();
+        }
+        this.gameLoop = requestAnimationFrame((ts) => this.update(ts));
+      }
+
+      checkCollision(head) {
+        return head.x < 1 || head.x > this.boardSize || 
+               head.y < 1 || head.y > this.boardSize ||
+               this.snake.slice(1).some(seg => seg.x === head.x && seg.y === head.y);
+      }
+
+      generateFood() {
+        let newFood;
+        do {
+          newFood = {
+            x: Math.floor(Math.random() * this.boardSize) + 1,
+            y: Math.floor(Math.random() * this.boardSize) + 1
+          };
+        } while (this.snake.some(seg => seg.x === newFood.x && seg.y === newFood.y));
+        return newFood;
+      }
+
+      render() {
+        const board = document.getElementById('board');
+        board.innerHTML = '';
+        
+        this.snake.forEach((seg, index) => {
+          const cell = document.createElement('div');
+          cell.className = 'snake-cell';
+          cell.style.left = `${(seg.x - 1) * this.cellSize}px`;
+          cell.style.top = `${(seg.y - 1) * this.cellSize}px`;
+          cell.style.setProperty('--hue', this.hue + index * 2);
+          board.appendChild(cell);
+        });
+
+        const food = document.createElement('div');
+        food.className = 'food';
+        food.style.left = `${(this.food.x - 1) * this.cellSize}px`;
+        food.style.top = `${(this.food.y - 1) * this.cellSize}px`;
+        board.appendChild(food);
+
+        document.getElementById('score').textContent = this.score;
+        document.getElementById('highScore').textContent = this.highScore;
+      }
+
+      gameOver() {
+        this.isGameActive = false;
+        cancelAnimationFrame(this.gameLoop);
+        document.getElementById('modalScore').textContent = this.score;
+        document.getElementById('gameOverModal').style.display = 'flex';
+      }
+
+      resetHighScore() {
+        localStorage.removeItem('snakeHighScore');
+        this.highScore = 0;
+        document.getElementById('highScore').textContent = '0';
+      }
+    }
+
+    // Initialize the game
+    const game = new StableSnake();
+  </script>
+</body>
+</html>

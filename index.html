@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Crazy Web Projects</title>
+
+    <!-- External libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.0/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --neon-pink: #ff007f;
+            --neon-blue: #00f3ff;
+            --neon-purple: #9d00ff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Orbitron', 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            background: radial-gradient(circle at center, #1a1a1a, #000);
+            position: relative;
+        }
+
+        .container {
+            text-align: center;
+            color: #ffffff;
+            position: relative;
+            z-index: 2;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            text-shadow: 0 0 15px var(--neon-pink), 0 0 30px var(--neon-pink);
+            letter-spacing: 5px;
+            margin-bottom: 40px;
+            font-family: 'Press Start 2P', cursive;
+            animation: neonPulse 2s infinite alternate;
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .project-link {
+            font-size: 1.5rem;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            padding: 20px 40px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: white;
+            box-shadow: 0 0 25px var(--neon-pink);
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s ease;
+            border: 2px solid var(--neon-blue);
+        }
+
+        .project-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .project-link:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 0 40px var(--neon-blue);
+        }
+
+        .project-link:hover::before {
+            left: 100%;
+        }
+
+        #three-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .footer {
+            font-size: 1rem;
+            color: #ffffff;
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            opacity: 0.7;
+            text-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        @keyframes neonPulse {
+            from {
+                text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            }
+            to {
+                text-shadow: 0 0 20px var(--neon-pink), 0 0 40px var(--neon-pink);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 30px;
+            }
+            
+            .project-link {
+                font-size: 1.2rem;
+                padding: 15px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="three-container"></div>
+
+    <div class="container">
+        <h1>Welcome to My Crazy Web Projects!</h1>
+        <div class="projects">
+            <a href="CyberGameHome.html" class="project-link">Cyber Snake Game</a>
+            <a href="Brick_BreakerHomePage.html" class="project-link"> Brick Breaker Game</a>
+            <a href="Calulator.html" class="project-link">Calculator</a>
+        </div>
+    </div>
+
+    <div class="footer">Created by Krish Meghapara</div>
+
+    <!-- Enhanced Particle.js background -->
+    <script>
+        particlesJS('three-container', {
+            particles: {
+                number: { value: 150, density: { enable: true, value_area: 1000 } },
+                color: { value: ["#ff007f", "#00f3ff", "#9d00ff"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.7, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1 } },
+                size: { value: 3, random: true, anim: { enable: true, speed: 40, size_min: 0.1 } },
+                line_linked: { 
+                    enable: true, 
+                    distance: 120, 
+                    color: "#ffffff",
+                    opacity: 0.2, 
+                    width: 1 
+                },
+                move: {
+                    enable: true,
+                    speed: 8,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "bubble" },
+                    onclick: { enable: true, mode: "push" }
+                },
+                modes: {
+                    bubble: { 
+                        distance: 200,
+                        size: 15,
+                        duration: 2,
+                        opacity: 0.8
+                    },
+                    push: { particles_nb: 6 }
+                }
+            }
+        });
+    </script>
+
+    <!-- Enhanced Three.js Scene -->
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('three-container').appendChild(renderer.domElement);
+
+        // Add multiple floating geometric shapes
+        const geometries = [
+            new THREE.IcosahedronGeometry(1.5),
+            new THREE.TorusKnotGeometry(1, 0.4, 64, 16),
+            new THREE.OctahedronGeometry(1.3)
+        ];
+
+        const materials = [
+            new THREE.MeshPhongMaterial({ 
+                color: 0xff007f,
+                emissive: 0xff007f,
+                wireframe: true
+            }),
+            new THREE.MeshNormalMaterial(),
+            new THREE.MeshBasicMaterial({ 
+                color: 0x00ffff,
+                wireframe: true 
+            })
+        ];
+
+        const shapes = [];
+        for(let i = 0; i < 5; i++) {
+            const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+            const material = materials[Math.floor(Math.random() * materials.length)];
+            const mesh = new THREE.Mesh(geometry, material);
+            
+            mesh.position.set(
+                Math.random() * 10 - 5,
+                Math.random() * 10 - 5,
+                Math.random() * 10 - 5
+            );
+            
+            shapes.push(mesh);
+            scene.add(mesh);
+        }
+
+        // Add ambient light
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        camera.position.z = 15;
+
+        // Mouse interaction
+        const mouse = { x: 0, y: 0 };
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            shapes.forEach((shape, index) => {
+                shape.rotation.x += 0.01;
+                shape.rotation.y += 0.01;
+                shape.position.x += Math.sin(Date.now() * 0.001 + index) * 0.01;
+                shape.position.y += Math.cos(Date.now() * 0.001 + index) * 0.01;
+            });
+
+            camera.position.x += (mouse.x * 5 - camera.position.x) * 0.05;
+            camera.position.y += (mouse.y * 5 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+
+    <!-- Enhanced GSAP Animations -->
+    <script>
+        gsap.from('.project-link', {
+            duration: 1,
+            y: 100,
+            opacity: 0,
+            stagger: 0.2,
+            ease: 'back.out(1.7)',
+            delay: 0.5
+        });
+
+        gsap.from('h1', {
+            duration: 2,
+            opacity: 0,
+            scale: 0.5,
+            rotation: 360,
+            ease: 'elastic.out(1, 0.5)'
+        });
+
+        // Hover effects
+        document.querySelectorAll('.project-link').forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                gsap.to(link, {
+                    duration: 0.3,
+                    boxShadow: '0 0 40px var(--neon-blue)',
+                    color: '#00ffff'
+                });
+            });
+            
+            link.addEventListener('mouseleave', () => {
+                gsap.to(link, {
+                    duration: 0.3,
+                    boxShadow: '0 0 25px var(--neon-pink)',
+                    color: 'white'
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
