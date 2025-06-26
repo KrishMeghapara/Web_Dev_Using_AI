@@ -3,98 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Crazy Web Projects</title>
-
+    <title>Krish Meghapara | Web Projects</title>
+    
     <!-- External libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.0/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha512-dv7JNE+Gh2NQR1F9xOAHKoFJoF7X1XURkTB4bV3qF9z9UHd+SEXZA0X3nqG+SAI3y58ZBFMqbALWWHg7jUL31rQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.0/gsap.min.js" integrity="sha512-j5G+DPp5M0wL3r83zG5+nqT3rJ3MNSHgN4wN0nrjP03jemxV+YzeYpQRU3DiV1Ihrr+SMra4ZvsY0djT3rKguJA==" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous">
 
     <style>
         :root {
             --neon-pink: #ff007f;
             --neon-blue: #00f3ff;
             --neon-purple: #9d00ff;
+            --dark-bg: #0a0a15;
+            --card-bg: rgba(15, 15, 35, 0.7);
+            --text-light: #f0f0ff;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
             padding: 0;
-            overflow: hidden;
-            font-family: 'Orbitron', 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            overflow-x: hidden;
+            font-family: 'Exo 2', sans-serif;
             min-height: 100vh;
-            flex-direction: column;
-            background: radial-gradient(circle at center, #1a1a1a, #000);
+            background: radial-gradient(ellipse at bottom, var(--dark-bg) 0%, #000 70%);
+            color: var(--text-light);
             position: relative;
-        }
-
-        .container {
-            text-align: center;
-            color: #ffffff;
-            position: relative;
-            z-index: 2;
-            padding: 20px;
-        }
-
-        h1 {
-            font-size: 4rem;
-            text-shadow: 0 0 15px var(--neon-pink), 0 0 30px var(--neon-pink);
-            letter-spacing: 5px;
-            margin-bottom: 40px;
-            font-family: 'Press Start 2P', cursive;
-            animation: neonPulse 2s infinite alternate;
-        }
-
-        .projects {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            max-width: 1200px;
-            width: 90%;
-            margin: 0 auto;
-        }
-
-        .project-link {
-            font-size: 1.5rem;
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
-            padding: 20px 40px;
-            border-radius: 15px;
-            text-decoration: none;
-            color: white;
-            box-shadow: 0 0 25px var(--neon-pink);
-            position: relative;
-            overflow: hidden;
-            transition: 0.3s ease;
-            border: 2px solid var(--neon-blue);
-        }
-
-        .project-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255,255,255,0.2),
-                transparent
-            );
-            transition: 0.5s;
-        }
-
-        .project-link:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 0 40px var(--neon-blue);
-        }
-
-        .project-link:hover::before {
-            left: 100%;
+            line-height: 1.6;
+            z-index: 0; /* Ensure body content is not obscured */
         }
 
         #three-container {
@@ -103,179 +47,555 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: -1; /* Keep Three.js canvas behind content */
             pointer-events: none;
+            opacity: 0.5; /* Reduce opacity to prevent overshadowing content */
         }
 
-        .footer {
-            font-size: 1rem;
-            color: #ffffff;
-            position: fixed;
-            bottom: 20px;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10; /* Ensure content stays above canvas */
+        }
+
+        /* Header styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--neon-blue);
+            font-size: 2.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
             width: 100%;
-            text-align: center;
-            opacity: 0.7;
-            text-shadow: 0 0 10px var(--neon-pink);
         }
 
-        @keyframes neonPulse {
+        /* Hero section */
+        .hero {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 4rem;
+            padding: 2rem 0;
+            animation: slideUp 1s ease-out;
+            z-index: 10; /* Ensure hero stays above canvas */
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        /* Projects grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateY(0);
+            animation: fadeIn 0.8s ease-out;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            z-index: 10; /* Ensure cards stay above canvas */
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(159, 0, 255, 0.3), 0 0 30px rgba(0, 243, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-image {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 0, 127, 0.3), rgba(157, 0, 255, 0.3));
+            opacity: 0.5;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .project-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 1.8rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .card-content p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .project-link {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            text-align: center;
+            width: fit-content;
+            border: 2px solid transparent;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+        }
+
+        .project-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.5), 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: var(--neon-blue);
+        }
+
+        .project-link i {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .project-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 1s ease-out;
+            z-index: 10; /* Ensure footer stays above canvas */
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 0, 127, 0.3);
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
             from {
-                text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+                opacity: 0;
             }
             to {
-                text-shadow: 0 0 20px var(--neon-pink), 0 0 40px var(--neon-pink);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             }
         }
 
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-                margin-bottom: 30px;
+            header {
+                flex-direction: column;
+                gap: 1.5rem;
             }
             
-            .project-link {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
                 font-size: 1.2rem;
-                padding: 15px 30px;
+            }
+            
+            .nav-links {
+                gap: 1.2rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-content {
+                padding: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-
+    <!-- Three.js container for background -->
     <div id="three-container"></div>
 
     <div class="container">
-        <h1>Welcome to My Crazy Web Projects!</h1>
-        <div class="projects">
-            <a href="CyberGameHome.html" class="project-link">Cyber Snake Game</a>
-            <a href="Brick_BreakerHomePage.html" class="project-link"> Brick Breaker Game</a>
-            <a href="Calulator.html" class="project-link">Calculator</a>
+        <!-- Header with navigation -->
+        <header>
+            <a href="#home" class="logo">
+                <i class="fas fa-code logo-icon"></i>
+                <span>KrishDev</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+        </header>
+
+        <!-- Hero section -->
+        <section class="hero" id="home">
+            <h1 class="floating">CREATIVE WEB PROJECTS</h1>
+            <p>Explore a collection of innovative web experiences that push the boundaries of modern web development</p>
+        </section>
+
+        <!-- Projects grid -->
+        <div class="projects-grid" id="projects">
+            <!-- Project 1 -->
+            <div class="project-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Cyber Snake Game">
+                </div>
+                <div class="card-content">
+                    <h3>Cyber Snake Game</h3>
+                    <p>A futuristic twist on the classic Snake game with neon visuals, power-ups, and immersive cyberpunk aesthetics.</p>
+                    <a href="CyberGameHome.html" class="project-link">Play Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Brick Breaker Game">
+                </div>
+                <div class="card-content">
+                    <h3>Brick Breaker Game</h3>
+                    <p>A modern take on the arcade classic with dynamic physics, power-ups, and visually stunning level design.</p>
+                    <a href="Brick_BreakerHomePage.html" class="project-link">Play Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="project-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1585314062604-1a357de8b000?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Minesweeper Game">
+                </div>
+                <div class="card-content">
+                    <h3>Minesweeper</h3>
+                    <p>A challenging puzzle game with multiple difficulty levels, timer, and intuitive controls in a sleek interface.</p>
+                    <a href="Mines.html" class="project-link">Play Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="footer">Created by Krish Meghapara</div>
-
-    <!-- Enhanced Particle.js background -->
-    <script>
-        particlesJS('three-container', {
-            particles: {
-                number: { value: 150, density: { enable: true, value_area: 1000 } },
-                color: { value: ["#ff007f", "#00f3ff", "#9d00ff"] },
-                shape: { type: "circle" },
-                opacity: { value: 0.7, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1 } },
-                size: { value: 3, random: true, anim: { enable: true, speed: 40, size_min: 0.1 } },
-                line_linked: { 
-                    enable: true, 
-                    distance: 120, 
-                    color: "#ffffff",
-                    opacity: 0.2, 
-                    width: 1 
-                },
-                move: {
-                    enable: true,
-                    speed: 8,
-                    direction: "none",
-                    random: true,
-                    straight: false,
-                    out_mode: "out",
-                    bounce: false
-                }
-            },
-            interactivity: {
-                detect_on: "canvas",
-                events: {
-                    onhover: { enable: true, mode: "bubble" },
-                    onclick: { enable: true, mode: "push" }
-                },
-                modes: {
-                    bubble: { 
-                        distance: 200,
-                        size: 15,
-                        duration: 2,
-                        opacity: 0.8
-                    },
-                    push: { particles_nb: 6 }
-                }
-            }
-        });
-    </script>
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="social-links">
+            <a href="https://github.com" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://linkedin.com" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://twitter.com" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://codepen.io" class="social-link" aria-label="CodePen"><i class="fab fa-codepen"></i></a>
+        </div>
+        <p class="copyright">© 2025 Krish Meghapara. All rights reserved.</p>
+    </footer>
 
     <!-- Enhanced Three.js Scene -->
     <script>
+        // Initialize Three.js scene
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ 
+            alpha: true, 
+            antialias: true,
+            canvas: document.createElement('canvas')
+        });
+        
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimize for performance
         document.getElementById('three-container').appendChild(renderer.domElement);
-
-        // Add multiple floating geometric shapes
+        
+        // Add ambient light
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(ambientLight);
+        
+        // Add directional light
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(1, 1, 1);
+        scene.add(directionalLight);
+        
+        // Create geometric shapes with simplified parameters
         const geometries = [
-            new THREE.IcosahedronGeometry(1.5),
-            new THREE.TorusKnotGeometry(1, 0.4, 64, 16),
-            new THREE.OctahedronGeometry(1.3)
+            new THREE.IcosahedronGeometry(1.5, 0),
+            new THREE.TorusGeometry(1.2, 0.4, 8, 50), // Reduced segments
+            new THREE.OctahedronGeometry(1.3, 0),
+            new THREE.DodecahedronGeometry(1.4, 0),
+            new THREE.ConeGeometry(1, 2, 8)
         ];
-
-        const materials = [
-            new THREE.MeshPhongMaterial({ 
-                color: 0xff007f,
-                emissive: 0xff007f,
-                wireframe: true
-            }),
-            new THREE.MeshNormalMaterial(),
-            new THREE.MeshBasicMaterial({ 
-                color: 0x00ffff,
-                wireframe: true 
-            })
+        
+        const colors = [
+            new THREE.Color(0xff007f), // neon pink
+            new THREE.Color(0x00f3ff), // neon blue
+            new THREE.Color(0x9d00ff), // neon purple
+            new THREE.Color(0x00ff9d), // neon green
+            new THREE.Color(0xff9d00)  // neon orange
         ];
-
+        
+        const materials = [];
+        colors.forEach(color => {
+            materials.push(
+                new THREE.MeshPhongMaterial({ 
+                    color: color,
+                    emissive: color,
+                    emissiveIntensity: 0.3, // Reduced intensity
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.6 // Lower opacity for less dominance
+                })
+            );
+        });
+        
         const shapes = [];
-        for(let i = 0; i < 5; i++) {
+        const count = 6; // Reduced shape count for performance
+        
+        for (let i = 0; i < count; i++) {
             const geometry = geometries[Math.floor(Math.random() * geometries.length)];
             const material = materials[Math.floor(Math.random() * materials.length)];
             const mesh = new THREE.Mesh(geometry, material);
             
+            // Position randomly in space
             mesh.position.set(
-                Math.random() * 10 - 5,
-                Math.random() * 10 - 5,
-                Math.random() * 10 - 5
+                (Math.random() - 0.5) * 30,
+                (Math.random() - 0.5) * 20,
+                (Math.random() - 0.5) * 50 - 20
             );
+            
+            // Random rotation and scale
+            mesh.rotation.set(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            );
+            
+            mesh.scale.set(
+                0.8 + Math.random() * 0.5,
+                0.8 + Math.random() * 0.5,
+                0.8 + Math.random() * 0.5
+            );
+            
+            // Store initial rotation for animation
+            mesh.userData = {
+                rotationSpeed: new THREE.Vector3(
+                    Math.random() * 0.01,
+                    Math.random() * 0.01,
+                    Math.random() * 0.01
+                ),
+                floatSpeed: 0.2 + Math.random() * 0.3
+            };
             
             shapes.push(mesh);
             scene.add(mesh);
         }
-
-        // Add ambient light
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-
+        
         camera.position.z = 15;
-
-        // Mouse interaction
+        
+        // Mouse interaction with throttling
         const mouse = { x: 0, y: 0 };
+        let lastMouseMove = 0;
         window.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastMouseMove < 16) return; // Throttle to ~60fps
+            lastMouseMove = now;
             mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
         });
-
+        
+        // Animation loop
         function animate() {
             requestAnimationFrame(animate);
             
-            shapes.forEach((shape, index) => {
-                shape.rotation.x += 0.01;
-                shape.rotation.y += 0.01;
-                shape.position.x += Math.sin(Date.now() * 0.001 + index) * 0.01;
-                shape.position.y += Math.cos(Date.now() * 0.001 + index) * 0.01;
+            // Animate shapes
+            shapes.forEach(mesh => {
+                mesh.rotation.x += mesh.userData.rotationSpeed.x;
+                mesh.rotation.y += mesh.userData.rotationSpeed.y;
+                mesh.rotation.z += mesh.userData.rotationSpeed.z;
+                
+                // Floating movement
+                mesh.position.y += Math.sin(Date.now() * 0.001 * mesh.userData.floatSpeed) * 0.01;
             });
-
-            camera.position.x += (mouse.x * 5 - camera.position.x) * 0.05;
-            camera.position.y += (mouse.y * 5 - camera.position.y) * 0.05;
+            
+            // Camera follow mouse
+            camera.position.x += (mouse.x * 4 - camera.position.x) * 0.05;
+            camera.position.y += (mouse.y * 3 - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
-
+            
             renderer.render(scene, camera);
         }
-
+        
         animate();
-
+        
         // Handle window resize
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -284,44 +604,64 @@
         });
     </script>
 
-    <!-- Enhanced GSAP Animations -->
+    <!-- GSAP Animations -->
     <script>
-        gsap.from('.project-link', {
+        // Ensure opacity stays at 1 for animated elements
+        gsap.from('header', {
             duration: 1,
-            y: 100,
+            y: -50,
             opacity: 0,
-            stagger: 0.2,
-            ease: 'back.out(1.7)',
-            delay: 0.5
+            ease: 'power3.out',
+            onComplete: () => gsap.set('header', { opacity: 1 }) // Ensure visibility
         });
-
-        gsap.from('h1', {
-            duration: 2,
+        
+        gsap.from('.hero', {
+            duration: 1.2,
             opacity: 0,
-            scale: 0.5,
-            rotation: 360,
-            ease: 'elastic.out(1, 0.5)'
+            y: 30,
+            delay: 0.3,
+            ease: 'expo.out',
+            onComplete: () => gsap.set('.hero', { opacity: 1 }) // Ensure visibility
         });
-
-        // Hover effects
-        document.querySelectorAll('.project-link').forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                gsap.to(link, {
+        
+        gsap.from('.project-card', {
+            duration: 1,
+            opacity: 0,
+            y: 50,
+            stagger: 0.15,
+            delay: 0.6,
+            ease: 'back.out(1.2)',
+            onComplete: () => gsap.set('.project-card', { opacity: 1 }) // Ensure visibility
+        });
+        
+        gsap.from('footer', {
+            duration: 1,
+            opacity: 0,
+            delay: 1,
+            ease: 'power2.out',
+            onComplete: () => gsap.set('footer', { opacity: 1 }) // Ensure visibility
+        });
+        
+        // Hover animations for project cards
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, {
                     duration: 0.3,
-                    boxShadow: '0 0 40px var(--neon-blue)',
-                    color: '#00ffff'
+                    scale: 1.03,
+                    boxShadow: '0 20px 40px rgba(159, 0, 255, 0.4), 0 0 40px rgba(0, 243, 255, 0.3)',
+                    ease: 'power2.out'
                 });
             });
             
-            link.addEventListener('mouseleave', () => {
-                gsap.to(link, {
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
                     duration: 0.3,
-                    boxShadow: '0 0 25px var(--neon-pink)',
-                    color: 'white'
+                    scale: 1,
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+                    ease: 'power2.out'
                 });
             });
         });
     </script>
-
 </body>
 </html>
