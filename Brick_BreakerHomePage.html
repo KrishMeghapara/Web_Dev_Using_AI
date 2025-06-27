@@ -3,25 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Red Ball - Made by Krish Meghapara</title>
+  <title>NEON BRICK BREAKER | Krish Meghapara</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik+Glitch&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Press+Start+2P&family=Rubik+Glitch&display=swap');
     
     :root {
-      --neon-red: #ff0000;
+      --neon-red: #ff0055;
       --neon-blue: #00f3ff;
       --neon-purple: #9d00ff;
       --neon-yellow: #ffd700;
+      --neon-green: #00ff9d;
+      --dark-bg: #0a0a15;
+      --darker-bg: #05050d;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(45deg, #1a1a1a, #000);
-      font-family: 'Press Start 2P', cursive;
-      overflow: hidden;
+      background: var(--dark-bg);
+      font-family: 'Orbitron', sans-serif;
+      overflow-x: hidden;
       min-height: 100vh;
       position: relative;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(157, 0, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(255, 0, 85, 0.1) 0%, transparent 20%);
+    }
+
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
     }
 
     .container {
@@ -29,49 +55,132 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      width: 100%;
+      max-width: 1200px;
+      min-height: 100vh;
+      padding: 20px;
       position: relative;
-      z-index: 2;
+      z-index: 20;
     }
 
-    h1 {
-      font-size: 4rem;
+    .game-title {
+      font-size: clamp(2.5rem, 8vw, 5rem);
       color: var(--neon-red);
       text-align: center;
-      margin-bottom: 30px;
-      text-shadow: 0 0 20px var(--neon-red);
-      animation: neonPulse 1.5s infinite alternate, float 3s ease-in-out infinite;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 15px var(--neon-red), 0 0 30px rgba(255, 0, 85, 0.5);
       position: relative;
+      font-weight: 900;
+      letter-spacing: 2px;
+      animation: titleGlow 2s infinite alternate;
     }
 
-    .floating-emojis {
+    .game-subtitle {
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      color: var(--neon-blue);
+      text-align: center;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 10px var(--neon-blue);
+      animation: subtitlePulse 3s infinite;
+    }
+
+    .game-logo {
+      width: clamp(120px, 25vw, 200px);
+      height: clamp(120px, 25vw, 200px);
+      margin: 2rem 0;
+      background: radial-gradient(circle, var(--neon-red) 0%, transparent 70%);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 0 40px var(--neon-red);
+      animation: logoPulse 3s infinite alternate;
+      border: 3px solid var(--neon-red);
+    }
+
+    .game-logo::before {
+      content: "";
       position: absolute;
-      pointer-events: none;
+      width: 80%;
+      height: 80%;
+      border-radius: 50%;
+      border: 4px solid transparent;
+      border-top-color: var(--neon-blue);
+      border-bottom-color: var(--neon-blue);
+      animation: logoRotate 5s linear infinite;
+    }
+
+    .game-logo i {
+      font-size: clamp(3rem, 8vw, 5rem);
+      color: white;
+      text-shadow: 0 0 15px var(--neon-red);
+      animation: iconPulse 2s infinite alternate;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
       width: 100%;
-      height: 100%;
+      max-width: 900px;
+      margin: 2rem 0;
     }
 
-    .emoji-float {
-      position: absolute;
-      font-size: 2rem;
-      animation: floatUp 5s linear infinite;
-      opacity: 0.7;
+    .feature-card {
+      background: rgba(20, 20, 40, 0.7);
+      border: 2px solid var(--neon-purple);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(157, 0, 255, 0.2);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 25px var(--neon-purple);
+      border-color: var(--neon-green);
+    }
+
+    .feature-card i {
+      font-size: 2.5rem;
+      color: var(--neon-green);
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px var(--neon-green);
+    }
+
+    .feature-card h3 {
+      color: var(--neon-yellow);
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+    }
+
+    .feature-card p {
+      color: #ddd;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     .start-button {
-      padding: 20px 50px;
-      background: linear-gradient(45deg, var(--neon-red), #ff6b6b);
+      padding: 20px 60px;
+      background: linear-gradient(45deg, var(--neon-red), var(--neon-purple));
       border: none;
-      border-radius: 15px;
-      font-size: 1.8rem;
-      color: #fff;
+      border-radius: 50px;
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      color: white;
       cursor: pointer;
       transition: all 0.3s;
       box-shadow: 0 0 30px var(--neon-red);
       position: relative;
       overflow: hidden;
-      transform: translateY(0);
-      animation: buttonGlow 2s infinite alternate;
+      margin: 2rem 0;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: 'Orbitron', sans-serif;
+      border: 3px solid rgba(255, 255, 255, 0.2);
     }
 
     .start-button::before {
@@ -84,23 +193,23 @@
       background: linear-gradient(
         90deg,
         transparent,
-        rgba(255,255,255,0.3),
+        rgba(255,255,255,0.4),
         transparent
       );
       transition: 0.5s;
     }
 
     .start-button:hover {
-      transform: translateY(-5px) scale(1.1);
-      box-shadow: 0 0 50px var(--neon-red);
-    }
-
-    .start-button:active {
-      transform: scale(0.95);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 0 50px var(--neon-purple);
     }
 
     .start-button:hover::before {
       left: 100%;
+    }
+
+    .start-button:active {
+      transform: scale(0.95);
     }
 
     .footer {
@@ -109,60 +218,115 @@
       left: 50%;
       transform: translateX(-50%);
       color: #fff;
-      font-size: 1rem;
+      font-size: clamp(0.8rem, 2vw, 1rem);
       text-shadow: 0 0 10px var(--neon-blue);
       animation: fadeIn 2s ease-out;
+      text-align: center;
+      padding: 10px 20px;
+      background: rgba(10, 10, 30, 0.7);
+      border-radius: 30px;
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      backdrop-filter: blur(5px);
+      z-index: 30;
     }
 
     .footer a {
       color: var(--neon-blue);
       text-decoration: none;
       transition: all 0.3s;
+      font-weight: 600;
     }
 
     .footer a:hover {
-      color: var(--neon-purple);
-      text-shadow: 0 0 15px var(--neon-purple);
+      color: var(--neon-green);
+      text-shadow: 0 0 15px var(--neon-green);
     }
 
-    .particles {
+    .floating-emojis {
       position: fixed;
+      pointer-events: none;
       width: 100%;
       height: 100%;
-      pointer-events: none;
-      z-index: 1;
+      top: 0;
+      left: 0;
+      z-index: 10;
     }
 
-    .particle {
+    .emoji-float {
       position: absolute;
-      width: 8px;
-      height: 8px;
-      background: var(--neon-red);
-      border-radius: 50%;
-      animation: float 6s infinite linear;
+      font-size: 1.5rem;
+      animation: floatUp 5s linear infinite;
       opacity: 0.7;
+      text-shadow: 0 0 10px currentColor;
     }
 
-    @keyframes neonPulse {
-      from { text-shadow: 0 0 10px var(--neon-red); }
-      to { text-shadow: 0 0 30px var(--neon-red), 0 0 10px var(--neon-purple); }
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      z-index: 25;
+    }
+
+    .control-btn {
+      padding: 12px 25px;
+      background: rgba(30, 30, 60, 0.7);
+      border: 2px solid var(--neon-blue);
+      border-radius: 10px;
+      color: var(--neon-blue);
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .control-btn:hover {
+      background: var(--neon-blue);
+      color: var(--dark-bg);
+      box-shadow: 0 0 20px var(--neon-blue);
+    }
+
+    /* Animations */
+    @keyframes titleGlow {
+      0% { text-shadow: 0 0 15px var(--neon-red), 0 0 30px rgba(255, 0, 85, 0.5); }
+      50% { text-shadow: 0 0 25px var(--neon-red), 0 0 50px rgba(255, 0, 85, 0.8); }
+      100% { text-shadow: 0 0 15px var(--neon-red), 0 0 30px rgba(255, 0, 85, 0.5); }
+    }
+
+    @keyframes subtitlePulse {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; text-shadow: 0 0 15px var(--neon-blue); }
+      100% { opacity: 0.7; }
+    }
+
+    @keyframes logoPulse {
+      0% { transform: scale(1); box-shadow: 0 0 40px var(--neon-red); }
+      100% { transform: scale(1.05); box-shadow: 0 0 60px var(--neon-red); }
+    }
+
+    @keyframes logoRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes iconPulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
     }
 
     @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-      100% { transform: translateY(0px); }
-    }
-
-    @keyframes buttonGlow {
-      from { box-shadow: 0 0 20px var(--neon-red); }
-      to { box-shadow: 0 0 40px var(--neon-red), 0 0 20px var(--neon-purple); }
+      0% { transform: translateY(0px) translateX(0); }
+      50% { transform: translateY(-40px) translateX(20px); }
+      100% { transform: translateY(0px) translateX(0); }
     }
 
     @keyframes floatUp {
-      0% { transform: translateY(100vh); opacity: 0; }
+      0% { transform: translateY(100vh) translateX(0); opacity: 0; }
       50% { opacity: 1; }
-      100% { transform: translateY(-100vh); opacity: 0; }
+      100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
     }
 
     @keyframes fadeIn {
@@ -170,142 +334,360 @@
       to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
 
-    .matrix-rain {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      opacity: 0.1;
-      pointer-events: none;
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .game-logo {
+        width: 150px;
+        height: 150px;
+        margin: 1.5rem 0;
+      }
+      
+      .start-button {
+        padding: 16px 40px;
+        font-size: 1.3rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+        width: 80%;
+      }
+      
+      .control-btn {
+        width: 100%;
+      }
+      
+      .footer {
+        width: 90%;
+        padding: 8px 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .game-title {
+        font-size: 2.2rem;
+      }
+      
+      .game-subtitle {
+        font-size: 0.9rem;
+      }
+      
+      .game-logo {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .start-button {
+        padding: 14px 35px;
+        font-size: 1.1rem;
+      }
+      
+      .feature-card {
+        padding: 15px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="matrix-rain" id="matrixRain"></div>
-  <div class="particles" id="particles"></div>
+  <canvas id="particle-canvas"></canvas>
+  <div class="floating-emojis" id="floatingEmojis"></div>
   
   <div class="container">
-    <div class="floating-emojis" id="floatingEmojis"></div>
-    <h1>🔥 Brick Breaker 🔥</h1>
-    <button class="start-button" onclick="startGame()">START GAME</button>
+    <h1 class="game-title">NEON BRICK BREAKER</h1>
+    <p class="game-subtitle">SMASH THE BRICKS, BREAK THE RULES</p>
+    
+    <div class="game-logo">
+      <i class="fas fa-gamepad"></i>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <i class="fas fa-bolt"></i>
+        <h3>LIGHTNING FAST</h3>
+        <p>Experience blazing fast gameplay with smooth animations and responsive controls.</p>
+      </div>
+      
+      <div class="feature-card">
+        <i class="fas fa-paint-brush"></i>
+        <h3>STUNNING VISUALS</h3>
+        <p>Neon graphics with dynamic lighting effects that react to your gameplay.</p>
+      </div>
+      
+      <div class="feature-card">
+        <i class="fas fa-trophy"></i>
+        <h3>CHALLENGING LEVELS</h3>
+        <p>50+ levels with increasing difficulty, power-ups, and boss battles.</p>
+      </div>
+    </div>
+    
+    <button class="start-button" id="startButton">
+      <i class="fas fa-play"></i> START GAME
+    </button>
+    
+    <div class="controls">
+      <button class="control-btn" id="howToPlayBtn">
+        <i class="fas fa-info-circle"></i> HOW TO PLAY
+      </button>
+      <button class="control-btn">
+        <i class="fas fa-cog"></i> SETTINGS
+      </button>
+      <button class="control-btn">
+        <i class="fas fa-chart-bar"></i> LEADERBOARDS
+      </button>
+    </div>
   </div>
 
   <div class="footer">
-    <p>Made with ❤️ by <a href="https://www.example.com">Krish Meghapara</a></p>
+    <p>Created with passion by <a href="#">Krish Meghapara</a> | © 2023 Neon Brick Breaker</p>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script>
-    // Matrix rain effect
-    function createMatrixRain() {
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()";
-      const matrix = document.getElementById('matrixRain');
+    // Particle Background System
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particles = [];
+    const particleCount = 150;
+    const colors = [
+      {r: 255, g: 0, b: 85},    // neon-red
+      {r: 0, g: 243, b: 255},   // neon-blue
+      {r: 157, g: 0, b: 255},   // neon-purple
+      {r: 255, g: 215, b: 0},   // neon-yellow
+      {r: 0, g: 255, b: 157}    // neon-green
+    ];
+    
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.alpha = Math.random() * 0.5 + 0.1;
+        this.wave = Math.random() * Math.PI * 2;
+      }
       
-      function createColumn() {
-        const col = document.createElement('div');
-        col.style.position = 'absolute';
-        col.style.top = '-100vh';
-        col.style.left = Math.random() * 100 + '%';
-        col.style.animation = `fall ${5 + Math.random() * 10}s linear infinite`;
-        col.style.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+      update() {
+        this.wave += 0.01;
+        this.x += this.speedX + Math.sin(this.wave) * 0.3;
+        this.y += this.speedY + Math.cos(this.wave) * 0.3;
         
-        for (let i = 0; i < 50; i++) {
-          const char = document.createElement('span');
-          char.textContent = chars[Math.floor(Math.random() * chars.length)];
-          char.style.opacity = Math.random();
-          col.appendChild(char);
+        if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+        if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+        
+        // Mouse interaction
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < mouse.radius) {
+          this.speedX = dx * 0.05;
+          this.speedY = dy * 0.05;
         }
+      }
+      
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.alpha})`;
+        ctx.fill();
         
-        matrix.appendChild(col);
-      }
-
-      for (let i = 0; i < 50; i++) {
-        setTimeout(createColumn, Math.random() * 5000);
-      }
-    }
-
-    // Floating particles
-    function createParticles() {
-      const container = document.getElementById('particles');
-      for (let i = 0; i < 100; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 6 + 's';
-        container.appendChild(particle);
+        // Glow effect
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.alpha * 0.3})`;
+        ctx.fill();
       }
     }
-
+    
+    function initParticles() {
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    }
+    
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw a subtle gradient background
+      const gradient = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, 0,
+        canvas.width / 2, canvas.height / 2, canvas.width * 0.8
+      );
+      gradient.addColorStop(0, 'rgba(10, 10, 30, 0.8)');
+      gradient.addColorStop(1, 'rgba(5, 5, 13, 1)');
+      
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw connecting lines between particles
+      for (let a = 0; a < particles.length; a++) {
+        for (let b = a; b < particles.length; b++) {
+          const dx = particles[a].x - particles[b].x;
+          const dy = particles[a].y - particles[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 100) {
+            const opacity = 1 - distance / 100;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(200, 200, 255, ${opacity * 0.1})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      // Update and draw particles
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
+      
+      requestAnimationFrame(animateParticles);
+    }
+    
+    // Mouse interaction
+    const mouse = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      radius: 100
+    };
+    
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.x;
+      mouse.y = e.y;
+    });
+    
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+    
     // Floating emojis
     function createFloatingEmojis() {
-      const emojis = ['🎮', '🔥', '💥', '🌟', '⭐', '✨', '🎯'];
+      const emojis = ['🎮', '🔥', '💥', '🌟', '⭐', '✨', '🎯', '🚀', '👾', '🕹️'];
+      const colors = ['var(--neon-red)', 'var(--neon-blue)', 'var(--neon-purple)', 'var(--neon-yellow)', 'var(--neon-green)'];
       const container = document.getElementById('floatingEmojis');
       
       setInterval(() => {
-        const emoji = document.createElement('div');
-        emoji.className = 'emoji-float';
-        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        emoji.style.left = Math.random() * 100 + '%';
-        container.appendChild(emoji);
-        
-        setTimeout(() => emoji.remove(), 5000);
-      }, 500);
+        if (container.children.length < 20) {
+          const emoji = document.createElement('div');
+          emoji.className = 'emoji-float';
+          emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          emoji.style.left = Math.random() * 100 + '%';
+          emoji.style.color = colors[Math.floor(Math.random() * colors.length)];
+          emoji.style.fontSize = (Math.random() * 2 + 1.5) + 'rem';
+          emoji.style.animationDuration = (Math.random() * 10 + 5) + 's';
+          container.appendChild(emoji);
+          
+          setTimeout(() => emoji.remove(), 10000);
+        }
+      }, 300);
     }
 
     // Start game animation
     function startGame() {
-      gsap.to(".start-button", {
+      gsap.to("#startButton", {
         duration: 0.5,
         scale: 0.8,
         opacity: 0,
         y: 100,
         ease: "power4.in",
         onComplete: () => {
-          window.location.href = "Brick_Breaker.html";
+          // Simulate game starting
+          document.querySelector('.game-title').textContent = "GET READY!";
+          document.querySelector('.game-subtitle').textContent = "Loading awesome gameplay...";
+          
+          setTimeout(() => {
+            // In a real implementation, this would redirect to the game
+            alert("Game would start now! Redirecting to Brick_Breaker.html in a real implementation.");
+            // window.location.href = "Brick_Breaker.html";
+          }, 1500);
         }
       });
       
-      gsap.to("h1", {
-        duration: 0.5,
-        y: -100,
+      gsap.to(".game-logo", {
+        duration: 0.7,
+        scale: 1.5,
         opacity: 0,
         ease: "power4.out"
       });
     }
 
+    // Show how to play
+    function showHowToPlay() {
+      // In a real implementation, this would link to the next page
+      alert("Redirecting to how-to-play page...");
+      // window.location.href = "how-to-play.html";
+    }
+
     // Initial animations
-    gsap.from("h1", {
-      duration: 2,
+    gsap.from(".game-title", {
+      duration: 1.5,
       y: -100,
       opacity: 0,
-      ease: "elastic.out(1, 0.3)"
+      ease: "power4.out"
     });
 
-    gsap.from(".start-button", {
+    gsap.from(".game-subtitle", {
       duration: 1.5,
+      y: 50,
+      opacity: 0,
+      delay: 0.3,
+      ease: "power3.out"
+    });
+
+    gsap.from(".game-logo", {
+      duration: 1.2,
       scale: 0,
       rotation: 360,
+      delay: 0.6,
+      ease: "back.out(1.7)"
+    });
+
+    gsap.from(".feature-card", {
+      duration: 1,
+      opacity: 0,
+      y: 50,
+      stagger: 0.2,
+      delay: 1,
+      ease: "power3.out"
+    });
+
+    gsap.from("#startButton", {
+      duration: 1,
+      scale: 0,
+      opacity: 0,
+      delay: 1.5,
+      ease: "elastic.out(1, 0.5)"
+    });
+
+    gsap.from(".control-btn", {
+      duration: 0.8,
+      opacity: 0,
+      y: 30,
+      stagger: 0.1,
+      delay: 1.8,
+      ease: "power3.out"
     });
 
     // Initialize effects
-    createMatrixRain();
-    createParticles();
+    initParticles();
+    animateParticles();
     createFloatingEmojis();
 
-    // Add mouse trail effect
-    document.addEventListener('mousemove', (e) => {
-      const trail = document.createElement('div');
-      trail.className = 'particle';
-      trail.style.left = e.pageX + 'px';
-      trail.style.top = e.pageY + 'px';
-      document.body.appendChild(trail);
-      
-      setTimeout(() => {
-        trail.remove();
-      }, 1000);
-    });
+    // Event listeners
+    document.getElementById('startButton').addEventListener('click', startGame);
+    document.getElementById('howToPlayBtn').addEventListener('click', showHowToPlay);
   </script>
 </body>
 </html>
